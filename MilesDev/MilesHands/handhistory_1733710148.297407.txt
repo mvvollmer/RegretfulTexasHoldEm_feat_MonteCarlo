@@ -1,0 +1,87 @@
+Rebel: posts small blind $5.00
+player_3: posts big blind $10.00
+player_4: calls $10.00
+player_5: calls $10.00
+player_6: folds
+TrackedAgent1: folds
+Rebel: folds
+*** FLOP *** [6c 5s Ad]
+player_3: bets $499.00 and is all-in
+player_4: folds
+player_5: calls $489.00 and is all-in
+Uncalled bet ($10.0) returned to player_3
+*** TURN *** [6c 5s Ad] [8c]
+*** RIVER *** [6c 5s Ad 8c] [8s]
+*** SHOW DOWN ***
+player_3: shows [Ks 2s] (a pair of Eights)
+player_5: shows [2d 2c] (two pair, Eights and Twos)
+player_3 lost $489.00
+player_5 won $489.00
+player_5 collected $4940.00 from pot
+*** SUMMARY ***
+Total pot $4990.00 | Rake $0.00
+Board [6c 5s Ad 8c 8s]
+player_4: posts small blind $5.00
+player_5: posts big blind $10.00
+player_6: folds
+TrackedAgent1: folds
+Rebel: calls $10.00
+player_3: raises $489.00 to $499.00 and is all-in
+player_4: folds
+player_5: calls $499.00 and is all-in
+Rebel: folds
+*** FLOP *** [Jh 7d 7h]
+*** TURN *** [Jh 7d 7h] [9s]
+*** RIVER *** [Jh 7d 7h 9s] [Jc]
+*** SHOW DOWN ***
+player_3: shows [Qs 3h] (two pair, Jacks and Sevens)
+player_5: shows [Qc Ad] (two pair, Jacks and Sevens)
+player_3 lost $499.00
+player_5 won $499.00
+player_5 collected $4990.00 from pot
+*** SUMMARY ***
+Total pot $5040.00 | Rake $0.00
+Board [Jh 7d 7h 9s Jc]
+player_6: posts small blind $5.00
+TrackedAgent1: posts big blind $10.00
+Rebel: folds
+player_3: raises $489.00 to $499.00 and is all-in
+player_4: folds
+player_5: calls $499.00 and is all-in
+player_6: folds
+TrackedAgent1: folds
+*** FLOP *** [Ah 4d Js]
+*** TURN *** [Ah 4d Js] [4h]
+*** RIVER *** [Ah 4d Js 4h] [Qh]
+*** SHOW DOWN ***
+player_3: shows [5s 8s] (a pair of Fours)
+player_5: shows [Qc 5d] (two pair, Queens and Fours)
+player_3 lost $499.00
+player_5 won $499.00
+player_5 collected $4990.00 from pot
+*** SUMMARY ***
+Total pot $4990.00 | Rake $0.00
+Board [Ah 4d Js 4h Qh]
+Rebel: posts small blind $5.00
+player_3: posts big blind $10.00
+player_4: calls $10.00
+player_5: calls $10.00
+player_6: folds
+TrackedAgent1: folds
+Rebel: folds
+*** FLOP *** [Ah Js 6h]
+player_3: bets $499.00 and is all-in
+player_4: folds
+player_5: calls $489.00 and is all-in
+Uncalled bet ($10.0) returned to player_3
+*** TURN *** [Ah Js 6h] [Kc]
+*** RIVER *** [Ah Js 6h Kc] [3d]
+*** SHOW DOWN ***
+player_3: shows [4c Qs] (High card Ace)
+player_5: shows [Jd 7h] (a pair of Jacks)
+player_3 lost $489.00
+player_5 won $489.00
+player_5 collected $4940.00 from pot
+*** SUMMARY ***
+Total pot $4990.00 | Rake $0.00
+Board [Ah Js 6h Kc 3d]

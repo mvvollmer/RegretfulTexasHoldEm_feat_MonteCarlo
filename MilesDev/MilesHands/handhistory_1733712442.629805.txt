@@ -1,0 +1,44 @@
+TrackedAgent1: posts small blind $5.00, Player money in pot: $5.00, Player stack: $494.00
+Rebel: posts big blind $10.00, Player money in pot: $10.00, Player stack: $489.00
+player_3: raises $489.00 to $499.00 and is all-in
+player_4: folds, Player money in pot: $0.00, Player stack: $499
+player_5: calls $499 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+player_6: folds, Player money in pot: $0.00, Player stack: $499
+TrackedAgent1: folds, Player money in pot: $0.00, Player stack: $499
+Rebel: folds
+*** FLOP *** [Td 8h 3c]
+*** TURN *** [Td 8h 3c] [Js]
+*** RIVER *** [Td 8h 3c Js] [4d]
+*** SHOW DOWN ***
+player_3: shows [3s 8d] (two pair, Eights and Threes)
+player_5: shows [6c 7c] (High card Jack)
+player_3 won $499.00
+player_5 lost $499.00
+player_3 collected $4990.00 from pot
+*** SUMMARY ***
+Total pot $4990.00 | Rake $0.00
+Board [Td 8h 3c Js 4d]
+Rebel: posts small blind $5.00, Player money in pot: $5.00, Player stack: $494.00
+player_3: posts big blind $10.00, Player money in pot: $509.00, Player stack: $-10.00
+player_4: calls $10, Player money in pot: $10.00, Player stack: $489.00
+player_5: calls $10, Player money in pot: $10.00, Player stack: $489.00
+player_6: folds, Player money in pot: $0.00, Player stack: $499
+TrackedAgent1: folds, Player money in pot: $0.00, Player stack: $499
+Rebel: folds, Player money in pot: $0.00, Player stack: $499
+*** FLOP *** [5d Qd 2h]
+player_3: bets $499.0 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+player_4: folds, Player money in pot: $10.00, Player stack: $489
+player_5: calls $489 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+Uncalled bet ($10.0) returned to player_3
+*** TURN *** [5d Qd 2h] [8c]
+*** RIVER *** [5d Qd 2h 8c] [Jh]
+*** SHOW DOWN ***
+player_3: shows [4h 4s] (a pair of Fours)
+player_5: shows [7d 6d] (High card Queen)
+player_3 won $489.00
+player_5 lost $489.00
+player_3 collected $4890.00 from pot
+player_5 collected $50.00 from pot
+*** SUMMARY ***
+Total pot $4990.00 | Rake $0.00
+Board [5d Qd 2h 8c Jh]

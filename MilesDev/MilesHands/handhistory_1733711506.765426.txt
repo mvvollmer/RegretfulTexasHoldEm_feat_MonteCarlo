@@ -1,0 +1,118 @@
+TrackedAgent1: posts small blind $5.00, Player money in pot: $5.00, Player stack: $494.00
+Rebel: posts big blind $10.00, Player money in pot: $10.00, Player stack: $489.00
+player_3: raises $489.00 to $499.00 and is all-in
+player_4: folds, Player money in pot: $0.00, Player stack: $499
+player_5: calls $499 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+player_6: folds, Player money in pot: $0.00, Player stack: $499
+TrackedAgent1: folds, Player money in pot: $0.00, Player stack: $499
+Rebel: calls $499 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+*** FLOP *** [Td 8h 3c]
+*** TURN *** [Td 8h 3c] [Js]
+*** RIVER *** [Td 8h 3c Js] [4d]
+*** SHOW DOWN ***
+Rebel: shows [5h Jc] (a pair of Jacks)
+player_3: shows [3s 8d] (two pair, Eights and Threes)
+player_5: shows [6c 7c] (High card Jack)
+Rebel lost $499.00
+player_3 won $998.00
+player_5 lost $499.00
+player_3 collected $7485.00 from pot
+*** SUMMARY ***
+Total pot $7485.00 | Rake $0.00
+Board [Td 8h 3c Js 4d]
+Rebel: posts small blind $5.00, Player money in pot: $504.00, Player stack: $-5.00
+player_3: posts big blind $10.00, Player money in pot: $509.00, Player stack: $-10.00
+player_4: calls $10, Player money in pot: $10.00, Player stack: $489.00
+player_5: calls $10, Player money in pot: $10.00, Player stack: $489.00
+player_6: folds, Player money in pot: $0.00, Player stack: $499
+TrackedAgent1: raises $200.42 to $210.42
+Rebel: calls $210.42, Player money in pot: $210.42, Player stack: $288.58
+player_3: raises $288.58 to $499.00 and is all-in
+player_4: folds, Player money in pot: $10.00, Player stack: $489
+player_5: calls $489 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+TrackedAgent1: folds, Player money in pot: $210.42, Player stack: $288.58000000000004
+Rebel: calls $288.58000000000004 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+*** FLOP *** [5d Qd 2h]
+*** TURN *** [5d Qd 2h] [8c]
+*** RIVER *** [5d Qd 2h 8c] [Jh]
+*** SHOW DOWN ***
+Rebel: shows [9c 6s] (High card Queen)
+player_3: shows [4h 4s] (a pair of Fours)
+player_5: shows [7d 6d] (High card Queen)
+Rebel lost $499.00
+player_3 won $998.00
+player_5 lost $499.00
+player_3 collected $7485.00 from pot
+*** SUMMARY ***
+Total pot $8587.10 | Rake $0.00
+Board [5d Qd 2h 8c Jh]
+player_3: posts small blind $5.00, Player money in pot: $504.00, Player stack: $-5.00
+player_4: posts big blind $10.00, Player money in pot: $20.00, Player stack: $479.00
+player_5: calls $10, Player money in pot: $10.00, Player stack: $489.00
+player_6: folds, Player money in pot: $0.00, Player stack: $499
+TrackedAgent1: folds, Player money in pot: $0.00, Player stack: $499
+Rebel: folds
+player_3: raises $489.00 to $499.00 and is all-in
+player_4: folds, Player money in pot: $0.00, Player stack: $499
+player_5: calls $489 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+*** FLOP *** [4d Qh 8s]
+*** TURN *** [4d Qh 8s] [6s]
+*** RIVER *** [4d Qh 8s 6s] [9c]
+*** SHOW DOWN ***
+player_3: shows [3c Ts] (High card Queen)
+player_5: shows [2c Ah] (High card Ace)
+player_3 lost $499.00
+player_5 won $499.00
+player_5 collected $4990.00 from pot
+*** SUMMARY ***
+Total pot $4990.00 | Rake $0.00
+Board [4d Qh 8s 6s 9c]
+player_4: posts small blind $5.00, Player money in pot: $5.00, Player stack: $494.00
+player_5: posts big blind $10.00, Player money in pot: $509.00, Player stack: $-10.00
+player_6: folds, Player money in pot: $0.00, Player stack: $499
+TrackedAgent1: raises $277.58 to $287.58
+Rebel: folds
+player_3: folds
+player_4: calls $287.58, Player money in pot: $287.58, Player stack: $211.42
+player_5: calls $287.58, Player money in pot: $287.58, Player stack: $211.42
+*** FLOP *** [6h Kh 3c]
+TrackedAgent1: bets $170.2, Player money in pot: $457.78, Player stack: $41.22
+player_4: folds, Player money in pot: $287.58, Player stack: $211.42000000000002
+player_5: calls $170.2, Player money in pot: $457.78, Player stack: $41.22
+*** TURN *** [6h Kh 3c] [9d]
+TrackedAgent1: checks, Player money in pot: $457.78, Player stack: $41.22000000000003
+player_5: checks
+*** RIVER *** [6h Kh 3c 9d] [7s]
+TrackedAgent1: checks, Player money in pot: $457.78, Player stack: $41.22000000000003
+player_5: checks
+*** SHOW DOWN ***
+TrackedAgent1: shows [2h Ah] (High card Ace)
+player_5: shows [7c Ts] (a pair of Sevens)
+TrackedAgent1 lost $457.78
+player_5 won $457.78
+player_5 collected $4577.80 from pot
+*** SUMMARY ***
+Total pot $6015.70 | Rake $0.00
+Board [6h Kh 3c 9d 7s]
+player_5: posts small blind $5.00, Player money in pot: $462.78, Player stack: $36.22
+player_6: posts big blind $10.00, Player money in pot: $10.00, Player stack: $489.00
+TrackedAgent1: folds, Player money in pot: $0.00, Player stack: $499
+Rebel: folds, Player money in pot: $0.00, Player stack: $499
+player_3: raises $489.00 to $499.00 and is all-in
+player_4: calls $499 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+player_5: calls $499 and is all-in, Player money in pot: $499.00, Player stack: $0.00
+player_6: folds, Player money in pot: $0.00, Player stack: $499
+*** FLOP *** [6d 5h 5d]
+*** TURN *** [6d 5h 5d] [Ts]
+*** RIVER *** [6d 5h 5d Ts] [2c]
+*** SHOW DOWN ***
+player_3: shows [7c 3s] (a pair of Fives)
+player_4: shows [3h 4h] (a straight, Two to Six)
+player_5: shows [6c 7h] (two pair, Sixes and Fives)
+player_3 lost $499.00
+player_4 won $998.00
+player_5 lost $499.00
+player_4 collected $7485.00 from pot
+*** SUMMARY ***
+Total pot $7485.00 | Rake $0.00
+Board [6d 5h 5d Ts 2c]
