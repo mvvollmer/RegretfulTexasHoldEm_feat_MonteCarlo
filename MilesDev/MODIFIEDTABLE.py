@@ -5,6 +5,7 @@ from pokerenv.common import GameState, PlayerState, PlayerAction, TablePosition,
 from pokerenv.player import Player
 from pokerenv.utils import pretty_print_hand, approx_gt, approx_lte
 import numpy as np
+from MODIFIEDPLAYER import ModifiedPlayer
 
 class ModifiedTable(Table):
     def __init__(self, n_players, player_names=None, track_single_player=False, stack_low=50, stack_high=200, hand_history_location='hands/', invalid_action_penalty=0, SB=5, BB=10):
@@ -13,6 +14,13 @@ class ModifiedTable(Table):
         self.side_pots = []
         self.SB = SB
         self.BB = BB
+        if player_names is None:
+            player_names = {}
+        for player in range(6):
+            if player not in player_names.keys():
+                player_names[player] = 'player_%d' % (player+1)
+        self.all_players = [ModifiedPlayer(n, player_names[n], invalid_action_penalty) for n in range(6)]
+        self.players = self.all_players[:n_players]
         self.OriginalPlayers = self.players
         self.OriginalPlayer_names = player_names
         self.OriginalN_players = n_players
@@ -30,6 +38,13 @@ class ModifiedTable(Table):
         self.n_players = self.OriginalN_players
         self.street_finished = False
         self.hand_is_over = False
+        
+        # Deal initial cards
+        initial_draw = self.deck.draw(self.n_players * 2)
+        for i, player in enumerate(self.players):
+            player.reset()
+            player.cards = [initial_draw[i], initial_draw[i + self.n_players]]
+            player.stack = self.rng.integers(self.stack_low, self.stack_high, 1)[0]
 
         # Rotate dealer position
         self.current_dealer = (self.current_dealer + 1) % self.n_players
@@ -45,12 +60,7 @@ class ModifiedTable(Table):
         self.last_bet_placed_by = self.players[bb_position]  # Set the last bet placed by the big blind
         self._write_event(f"{self.players[bb_position].name}: posts big blind ${self.BB:.2f}, Player money in pot: ${self.players[bb_position].money_in_pot:.2f}, Player stack: ${self.players[bb_position].stack:.2f}")
 
-        # Deal initial cards
-        initial_draw = self.deck.draw(self.n_players * 2)
-        for i, player in enumerate(self.players):
-            player.reset()
-            player.cards = [initial_draw[i], initial_draw[i + self.n_players]]
-            player.stack = self.rng.integers(self.stack_low, self.stack_high, 1)[0]
+        
 
         # Determine the first player to act
         self.first_to_act = (bb_position + 1) % self.n_players if self.n_players > 2 else sb_position
@@ -184,6 +194,8 @@ class ModifiedTable(Table):
         self.current_player_i = self.next_player_i
         player = self.players[self.current_player_i]
         self.current_turn += 1
+        
+        #self.debug_pot_distribution()
         
         # Skip invalid player states
         if (player.all_in or player.state is not PlayerState.ACTIVE) and not self.hand_is_over:
@@ -336,7 +348,7 @@ class ModifiedTable(Table):
             else:
                 active_players_after = [i for i in range(self.n_players) if i > self.current_player_i if
                                         self.players[i].state is PlayerState.ACTIVE if not self.players[i].all_in]
-                active_players_before = [i for i in range(self.n_players) if i < self.current_player_i if
+                active_players_before = [i for i in range(self.n_players) if i <= self.current_player_i if
                                          self.players[i].state is PlayerState.ACTIVE if not self.players[i].all_in]
                 if len(active_players_after) > 0:
                     self.next_player_i = min(active_players_after)
@@ -356,6 +368,8 @@ class ModifiedTable(Table):
         if self.hand_is_over:
             self._distribute_pot()
             self._finish_hand()
+            
+        #self.debug_pot_distribution()
             
         return obs, rewards, self.hand_is_over, {}
     
@@ -457,3 +471,39 @@ class ModifiedTable(Table):
                 self._write_event(f"{player.name} won ${player.winnings:.2f}")
             else:
                 self._write_event(f"{player.name} lost ${-player.winnings:.2f}")
+                
+                
+                
+    def debug_pot_distribution(self):
+        """
+        Debug pot distribution to ensure stacks and pot calculations are consistent.
+        """
+        print("---- Debugging Pot Distribution ----")
+        print(f"Total Pot: ${self.pot:.2f}")
+        print("Player Contributions to Pot:")
+        for player in self.players:
+            print(f"  {player.name}: Money in Pot: ${player.money_in_pot:.2f}, Stack: ${player.stack:.2f}")
+
+        # Validate total contributions match pot
+        total_contributions = sum(player.money_in_pot for player in self.players)
+        if abs(self.pot - total_contributions) > 0.01:
+            print(f"ERROR: Pot (${self.pot:.2f}) does not match total contributions (${total_contributions:.2f}).")
+        else:
+            print("Pot matches total contributions.")
+
+        # Check for negative stack or money_in_pot
+        for player in self.players:
+            if player.stack < 0:
+                print(f"ERROR: Player {player.name} has a negative stack: ${player.stack:.2f}.")
+            if player.money_in_pot < 0:
+                print(f"ERROR: Player {player.name} has negative money in pot: ${player.money_in_pot:.2f}.")
+
+        # Check side pot calculations
+        if self.side_pots:
+            print("Side Pot Details:")
+            for i, side_pot in enumerate(self.side_pots):
+                eligible_player_names = [p.name for p in side_pot['eligible_players']]
+                print(f"  Side Pot {i+1}: Amount: ${side_pot['amount']:.2f}, Level: ${side_pot['level']:.2f}")
+                print(f"    Eligible Players: {eligible_player_names}")
+
+        print("---- End Debugging Pot Distribution ----")

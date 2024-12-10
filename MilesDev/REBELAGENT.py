@@ -21,7 +21,7 @@ from REPLAYBUFFER import ReplayBuffer
 
 
 class REBELAgent:
-    def __init__(self, num_players, hidden_size=64, lr=1e-3, gamma=0.995):
+    def __init__(self, num_players, hidden_size=64, lr=1e-3, gamma=0.999):
         # Define game-specific constants
         self.ACTIONS = [PlayerAction.CHECK, PlayerAction.FOLD, PlayerAction.BET, PlayerAction.CALL]
         self.ACTION_MAP = {
@@ -30,6 +30,7 @@ class REBELAgent:
             2: (PlayerAction.BET, 0),
             3: (PlayerAction.CALL, 0)
         }
+        self.wins = 0
         
         state_dim = 21 + 8 * num_players  
         self.state_dim = state_dim
@@ -41,11 +42,14 @@ class REBELAgent:
         self.policy_network = PolicyNetwork(state_dim, hidden_size, 4)
         self.bet_value_network = BetValueNetwork(state_dim, hidden_size)
         
+        # Add epsilonHand flag
+        self.epsilonHand = True
+        
         # More robust optimization parameters
         self.importance_threshold = 0.001
         self.td_error_clip = 1.0
         self.batch_processing_size = 512
-        self.min_train_samples = 100  # Increased for better initial learning
+        self.min_train_samples = 25  # Increased for better initial learning
         self.grad_clip_norm = 1.0
         
         # Device handling
@@ -78,9 +82,9 @@ class REBELAgent:
         )
         
         # Better exploration parameters aligned with ReBeL paper
-        self.epsilon = 0.9
-        self.epsilon_min = 0.01
-        self.epsilon_decay = 0.995  # Slower decay
+        self.epsilon = 0.4
+        self.epsilon_min = 0.05
+        self.epsilon_decay = 0.995  
         self.exploration_bonus = 0.1
         
         # Enhanced performance tracking
@@ -109,34 +113,32 @@ class REBELAgent:
         Decide the action based on the observation.
         Outputs both the action type and the bet value if applicable.
         """
-        if random.random() < self.epsilon:
-            action_type = random.choice(self.ACTIONS)  # Use class constant
+        # Only apply epsilon-greedy exploration if epsilonHand is True
+        if self.epsilonHand:
+            action_type = random.choice(self.ACTIONS)
             if action_type == PlayerAction.BET:
-                bet_value = random.uniform(0, 100)
+                bet_value = random.uniform(0, 50)
                 return Action(action_type, bet_value)
             return Action(action_type, 0)
         
-        with torch.no_grad():  # Keep this for safety
-            # Pre-allocate observation array
+        with torch.no_grad():
             observation = np.asarray(observation, dtype=np.float32).reshape(1, -1)
             observation = self.scaler.transform(observation)[0]
             
-            # More efficient tensor creation
             state_tensor = torch.from_numpy(observation).to(self.device, non_blocking=True).float().unsqueeze(0)
             
-            # Get action probabilities more efficiently
             action_probs = self.policy_network(state_tensor)
-            action_probs = torch.softmax(action_probs, dim=-1)  # More stable than manual normalization
+            action_probs = torch.softmax(action_probs, dim=-1)
             action_probs = action_probs.cpu().numpy().flatten()
             
-            # Faster validation check
             if not np.all(np.isfinite(action_probs)):
-                return Action(PlayerAction.FOLD, 0)
-            
-            # Temperature scaling without recreation of array
-            temperature = max(0.5, self.epsilon)
-            np.power(action_probs, 1/temperature, out=action_probs)
-            action_probs /= action_probs.sum()
+                # Replace non-finite values with 0 and keep valid probabilities
+                action_probs = np.nan_to_num(action_probs, 0)
+                # Ensure we still have valid probabilities by normalizing
+                if action_probs.sum() == 0:
+                    action_probs = np.ones_like(action_probs) / len(action_probs)
+                else:
+                    action_probs = action_probs / action_probs.sum()
             
             chosen_action = np.random.choice(4, p=action_probs)
             
@@ -148,7 +150,6 @@ class REBELAgent:
                 bet_value = float(max(0, bet_tensor.cpu().item()))
                 return Action(PlayerAction.BET, bet_value)
             
-            # Use class constant
             action_type, value = self.ACTION_MAP[chosen_action]
             return Action(action_type, value)
         
@@ -157,30 +158,25 @@ class REBELAgent:
         self.replay_buffer.add(state, action, reward, next_state, done=False)
         
     def update_exploration(self, reward):
-        """Enhanced exploration update based on ReBeL paper"""
         self.recent_rewards.append(reward)
-        self.running_reward = 0.95 * self.running_reward + 0.05 * reward
-        
-        if self.running_reward > self.best_reward:
-            self.best_reward = self.running_reward
-        
+        """Enhanced exploration update based on ReBeL paper"""
         # Update epsilon with better heuristics
-        if len(self.recent_rewards) >= 30:
-            avg_reward = np.mean(list(self.recent_rewards)[-30:])
-            if avg_reward < -0.2:
-                self.epsilon = min(0.3, self.epsilon * 1.01)
+        if len(self.recent_rewards) >= 20:
+            avg_reward = np.mean(list(self.recent_rewards)[-20:])
+            #print(f"Average reward: {avg_reward}, epsilon: {self.epsilon}, win streak: {self.win_streak}, wins: {self.wins}")
+            if avg_reward < -0.1:
+                self.epsilon = min(0.4, self.epsilon * 1.025)
+                if len(self.recent_rewards)  >= 40:
+                    avg_reward = np.mean(list(self.recent_rewards)[-40:])
+                    if avg_reward < 0:
+                        self.epsilon = max(0.2, self.epsilon)
+            elif avg_reward > 0.4:
+                self.epsilon = max(self.epsilon_min, self.epsilon * 0.95)
             else:
                 self.epsilon = max(self.epsilon_min, self.epsilon * self.epsilon_decay)
-        
-        # Enhanced win streak handling
-        if reward > 0:
-            self.win_streak += 1
-            if self.win_streak > 5:
-                self.epsilon = max(self.epsilon_min, self.epsilon * 0.95)
-        else:
-            self.win_streak = 0
-            if len(self.recent_rewards) >= 10 and np.mean(list(self.recent_rewards)[-10:]) < -0.5:
-                self.epsilon = min(0.3, self.epsilon * 1.05)
+                
+                
+        self.epsilonHand = random.random() < self.epsilon
 
 
     def train(self, batch_size=32):

@@ -2,9 +2,11 @@ import numpy as np
 from REBELAGENT import REBELAgent
 from FEATURIZESTATE import featurize_state
 import pokerenv.obs_indices as indices
+from HybridPokerAgent import HybridPokerAgent
+from IMPROVEDREBELAGENT import ImprovedREBELAgent
 
 
-def learningLoop(table, agents, active_players, n_iterations, batch_size=32, train_interval=1):
+def learningLoop(table, agents, active_players, n_iterations, batch_size=32, train_interval=3, max_hands = 30):
     """
     Main loop for training agents in the poker environment.
     
@@ -36,6 +38,8 @@ def learningLoop(table, agents, active_players, n_iterations, batch_size=32, tra
                 communityCards = table.cards
                 state = featurize_state(playerCards, communityCards, playerBets)
                 initial_states.append(state)
+                
+            
 
     # Fit scalers for all agents
     for agent in agents:
@@ -66,6 +70,12 @@ def learningLoop(table, agents, active_players, n_iterations, batch_size=32, tra
                 if isinstance(agent, REBELAgent):
                     state = featurize_state(playerCards, communityCards, playerBets)
                     action = agent.get_action(state)
+                elif isinstance(agent, HybridPokerAgent):
+                    Hstate = featurize_state(playerCards, communityCards, playerBets)
+                    action = agent.get_action(obs, Hstate)
+                elif isinstance(agent, ImprovedREBELAgent):  # Add this new condition
+                    Istate = featurize_state(playerCards, communityCards, playerBets)
+                    action = agent.get_action(obs, Istate)
                 else:
                     action = agent.get_action(obs)  
                 
@@ -86,6 +96,14 @@ def learningLoop(table, agents, active_players, n_iterations, batch_size=32, tra
 
                     # Store transition in the agent's replay buffer
                     agent.store_transition(state, action, 0, nextState)
+                elif isinstance(agent, HybridPokerAgent):
+                    Hnext_state = featurize_state(playerCards, communityCards, playerBets)
+                    agent.store_transition(Hstate, action, 0, Hnext_state)
+                    
+                elif isinstance(agent, ImprovedREBELAgent):  # Add this new condition
+                    Inext_state = featurize_state(playerCards, communityCards, playerBets)
+                    agent.store_transition(Istate, action, 0, Inext_state)
+
 
                 # Update observation and acting player
                 obs = next_obs
@@ -94,7 +112,7 @@ def learningLoop(table, agents, active_players, n_iterations, batch_size=32, tra
             for player in table.players:
                 if player.stack > 0:
                     info.append((player, player.name))
-            if len(info) == 1 or hands == 50:
+            if len(info) == 1 or hands == max_hands:
                 roundDone = True
                 break
             obs = table.resetHand(info)
@@ -104,7 +122,7 @@ def learningLoop(table, agents, active_players, n_iterations, batch_size=32, tra
 
         # Track winnings and winners
         starting_stack = table.stack_low
-        winnings = [player.stack - starting_stack for player in table.OriginalPlayers]
+        winnings = [player.stack - starting_stack for player in table.OriginalPlayers if player.has_acted ]
         playerWinnings.append(winnings)
         maxWinnings = max(playerWinnings[-1])
         winners = []
@@ -113,21 +131,49 @@ def learningLoop(table, agents, active_players, n_iterations, batch_size=32, tra
                 playerWins[player_map[player.name]] += 1
                 winners.append((agent, player))
             if isinstance(agent, REBELAgent):
-                agent.update_exploration(player.stack)  # Update exploration based on performance
                 playerCards = player.cards
                 nextState = featurize_state(playerCards, communityCards, playerBets)
                 if player.stack - starting_stack == maxWinnings:
                     agent.store_transition(state, action, 1, nextState)
+                    agent.update_exploration(1)
+                    agent.wins += 1
                 elif player.stack - starting_stack >= 0:
-                    agent.store_transition(state, action, player.stack/maxWinnings, nextState)
+                    agent.store_transition(state, action, (player.stack - starting_stack)/maxWinnings, nextState)
+                    agent.update_exploration((player.stack - starting_stack)/maxWinnings)
                 else:
                     agent.store_transition(state, action, -1, nextState) 
+                    agent.update_exploration(-1)
                 
-                # Train agents
-                if iteration % train_interval == 0:
-                    for agent in agents:
-                        if hasattr(agent, "train"):
-                            agent.train(batch_size)
+                
+            elif isinstance(agent, HybridPokerAgent):
+                playerCards = player.cards
+                Hnext_state = featurize_state(playerCards, communityCards, playerBets)
+                if player.stack - starting_stack == maxWinnings:
+                    agent.store_transition(Hstate, action, 1, Hnext_state)
+                elif player.stack - starting_stack >= 0:
+                    agent.store_transition(Hstate, action, (player.stack - starting_stack)/maxWinnings, Hnext_state)
+                else:
+                    agent.store_transition(Hstate, action, -1, Hnext_state)
+                    
+            elif isinstance(agent, ImprovedREBELAgent):  # Add this new condition
+                playerCards = player.cards
+                Inext_state = featurize_state(playerCards, communityCards, playerBets)
+                if player.stack - starting_stack == maxWinnings:
+                    agent.store_transition(Istate, action, 1, Inext_state)
+                    agent.update_exploration(1)
+                elif player.stack - starting_stack >= 0:
+                    agent.store_transition(Istate, action, (player.stack - starting_stack)/maxWinnings, Inext_state)
+                    agent.update_exploration((player.stack - starting_stack)/maxWinnings)
+                else:
+                    agent.store_transition(Istate, action, -1, Inext_state)
+                    agent.update_exploration(-1)
+                        
+            # Train agents
+            if iteration % train_interval == 0:
+                for agent in agents:
+                    if hasattr(agent, "train"):
+                        agent.train(batch_size)
+                    
             if hasattr(agent, "update_policy"):
                 agent.update_policy(winners)
 
