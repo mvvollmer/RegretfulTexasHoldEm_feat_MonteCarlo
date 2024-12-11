@@ -43,8 +43,8 @@ def plot_cumulative_winnings(total_winnings, players, n_iterations):
     for i, (player, color) in enumerate(zip(players, colors)):
         mean = mean_cumulative_winnings[:, i]
         stderr = stderr_cumulative_winnings[:, i]
-        lower_bound = mean - 1.96 * stderr
-        upper_bound = mean + 1.96 * stderr
+        lower_bound = mean - 1.28 * stderr
+        upper_bound = mean + 1.28 * stderr
 
         # Ensure all arrays have the same length as x
         mean = mean[:len(x)]
@@ -60,7 +60,7 @@ def plot_cumulative_winnings(total_winnings, players, n_iterations):
     # Customize the plot
     plt.xlabel('Rounds', fontsize=12)
     plt.ylabel('Cumulative Winnings', fontsize=12)
-    plt.title('Average Cumulative Player Winnings with 95% Confidence Interval', 
+    plt.title('Average Cumulative Player Winnings with 80% Confidence Interval', 
               fontsize=14, pad=20)
     plt.legend(bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.grid(True, linestyle='--', alpha=0.7)
