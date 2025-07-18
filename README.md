@@ -1,0 +1,1 @@
+Please read our paper here: https://firebasestorage.googleapis.com/v0/b/personal-website-f0071.appspot.com/o/poker-reinforcement-learning-paper.pdf?alt=media&token=9f2631cc-4ed4-47fe-9be8-38c74633322c
